@@ -115,39 +115,7 @@ class ModelExplainer:
         except Exception as e:
             logging.error(f"LIME explanation error: {str(e)}")
             return None
-        
-    def explain_with_shap(self, states):
-        """
-        Sử dụng SHAP để phân tích tầm quan trọng của features
-        """
-        try:
-            # Tạo thư mục để lưu ảnh nếu chưa tồn tại
-            explanation_dir = os.path.join(BASE_DIR, 'explanations')
-            os.makedirs(explanation_dir, exist_ok=True)
             
-            # Tạo SHAP explainer
-            explainer = shap.KernelExplainer(self.model.predict, states[:100])
-            shap_values = explainer.shap_values(states[:10])
-            
-            # Tạo summary plot
-            plt.figure(figsize=(10, 6))
-            shap.summary_plot(shap_values, states[:10], plot_type="bar")
-            plt.title("SHAP Feature Importance")
-            plt.tight_layout()
-            
-            # Lưu ảnh vào thư mục explanations
-            shap_plot_path = os.path.join(explanation_dir, 'shap_feature_importance.png')
-            plt.savefig(shap_plot_path)
-            plt.close()
-            
-            logging.info(f"SHAP feature importance plot saved to {shap_plot_path}")
-            
-            return shap_values
-        
-        except Exception as e:
-            logging.error(f"SHAP analysis error: {str(e)}")
-            return None
-
     def save_lime_explanations(self, explanations, filename='lime_explanations.json'):
         """
         Lưu giải thích LIME vào file JSON
